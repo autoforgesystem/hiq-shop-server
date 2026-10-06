@@ -1,7 +1,9 @@
 # Local Postgres for development: docker compose up -d
+name: hiq-shop
 services:
   db:
     image: postgres:17-alpine
+    container_name: hiq-shop-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: hiq

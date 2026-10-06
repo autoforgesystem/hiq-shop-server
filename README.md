@@ -31,6 +31,33 @@ npm run start:dev           # http://localhost:3000/api
 | Admin (owner) | `ADMIN_EMAIL` in `.env` | `ADMIN_PASSWORD` in `.env` |
 | Demo customer with 2 units, an order and a booking | `juan@example.com` | `demo1234` |
 | Demo customer, empty account | `maria@example.com` | `demo1234` |
+| Test customers (after `db:seed:test`) | `<first>.<last>@test.example.com`, e.g. `grace.mendoza@test.example.com` | `Test1234` |
+
+## Test data
+
+`npm run db:seed:test` adds a realistic dataset for trying the API and the admin:
+- 24 customers with addresses
+- about 40 orders in every status, including guest orders and quote-only orders
+- installed units with service history and filter due dates, from overdue to months away
+- service bookings in every status
+- warranty claims
+- 25 leads from every form, with UTM sources
+
+It generates the same data on every run. All test emails end in `@test.example.com`, and `--fresh` deletes only those records before recreating them. It refuses to run when `NODE_ENV=production`.
+
+## Viewing the database in pgAdmin
+
+With `npm run db:up` running, register a server in pgAdmin (**Object → Register → Server**):
+
+| Field | Value |
+|---|---|
+| Name | HIQ Shop (local) |
+| Host name/address | `localhost` |
+| Port | `5432` |
+| Maintenance database | `hiq_shop` |
+| Username / Password | `hiq` / `hiq` |
+
+The tables are under **Databases → hiq_shop → Schemas → public → Tables**, and `_prisma_migrations` lists the applied migrations. The data lives in the Docker volume `hiq-shop_hiq-db`, so it survives `docker compose down`; `docker compose down -v` deletes it.
 
 ## Scripts
 
@@ -43,6 +70,8 @@ npm run start:dev           # http://localhost:3000/api
 | `db:migrate` | Apply migrations (`prisma migrate deploy`) |
 | `db:migrate:dev` | Create a new migration after editing `prisma/schema.prisma` |
 | `db:seed` | Load the catalogue, admin and demo data. Safe to run again. |
+| `db:seed:test` | Add test data (see below). `npm run db:seed:test -- --fresh` recreates it. |
+| `db:reset` | Drop **all** data, re-run migrations and seed. Development databases only. |
 | `db:studio` | Browse the database in Prisma Studio |
 | `test:e2e` | End-to-end tests (starts its own in-memory Postgres) |
 | `lint` | oxlint |

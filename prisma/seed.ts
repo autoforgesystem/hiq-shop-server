@@ -42,11 +42,11 @@ async function seedDemo() {
   const passwordHash = await bcrypt.hash('demo1234', 12);
   const juan = await db.customer.upsert({
     where: { email: 'juan@example.com' }, update: {},
-    create: { firstName: 'Juan', lastName: 'dela Cruz', email: 'juan@example.com', phone: '0917 123 4567', passwordHash },
+    create: { firstName: 'Juan', lastName: 'dela Cruz', email: 'juan@example.com', phone: '0917 123 4567', passwordHash, createdAt: d('2025-11-01') },
   });
   await db.customer.upsert({
     where: { email: 'maria@example.com' }, update: {},
-    create: { firstName: 'Maria', lastName: 'Santos', email: 'maria@example.com', phone: '0918 765 4321', passwordHash },
+    create: { firstName: 'Maria', lastName: 'Santos', email: 'maria@example.com', phone: '0918 765 4321', passwordHash, createdAt: d('2026-02-14') },
   });
   if (await db.unit.count({ where: { customerId: juan.id } })) return console.log('Demo customers already loaded, skipped.');
 

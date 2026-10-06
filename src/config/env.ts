@@ -15,6 +15,7 @@ export interface Env {
   UPLOAD_DIR: string;
   PUBLIC_URL: string;
   SALES_EMAIL: string;
+  TRUST_PROXY: number;
 }
 
 const list = (v?: string) => (v ?? '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -44,7 +45,10 @@ export function validateEnv(raw: Record<string, unknown>): Env {
     SERVICE_AREAS: list(s('SERVICE_AREAS', '')).map((a) => a.toLowerCase()),
     SUBSCRIPTIONS_ENABLED: s('SUBSCRIPTIONS_ENABLED', 'false') === 'true',
     UPLOAD_DIR: s('UPLOAD_DIR', 'uploads'),
-    PUBLIC_URL: s('PUBLIC_URL', `http://localhost:${port}`),
+    // Render sets RENDER_EXTERNAL_URL to the service's public address.
+    PUBLIC_URL: s('PUBLIC_URL', s('RENDER_EXTERNAL_URL', `http://localhost:${port}`)),
     SALES_EMAIL: s('SALES_EMAIL', 'sales@hospitalityinnovations.com.ph'),
+    // Proxies in front of the app (1 on Render). Needed so rate limits see each visitor's real IP.
+    TRUST_PROXY: Number(s('TRUST_PROXY', '0')),
   };
 }

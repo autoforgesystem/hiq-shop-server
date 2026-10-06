@@ -8,6 +8,8 @@ import type { Env } from './config/env.js';
 /** Shared by main.ts and the e2e tests, so tests run the same pipes and prefix as production. */
 export function configureApp(app: NestExpressApplication) {
   const config = app.get<ConfigService<Env, true>>(ConfigService);
+  const proxies = config.get('TRUST_PROXY', { infer: true });
+  if (proxies > 0) app.set('trust proxy', proxies);
   app.setGlobalPrefix('api');
   app.enableCors({ origin: config.get('CORS_ORIGINS', { infer: true }), credentials: true });
   // Large enough for catalogue imports that carry photos as data URLs.

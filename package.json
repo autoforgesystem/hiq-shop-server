@@ -5,6 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "22.x"
+  },
   "type": "module",
   "scripts": {
     "build": "nest build",
@@ -12,6 +15,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
+    "render:build": "npm ci --include=dev && npm run build",
+    "render:start": "prisma migrate deploy && prisma db seed && node dist/main.js",
     "postinstall": "prisma generate",
     "db:up": "docker compose up -d",
     "db:local": "pglite-server --db=./.pglite --port=5433 --max-connections=10",

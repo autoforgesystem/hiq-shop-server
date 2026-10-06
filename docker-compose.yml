@@ -1,0 +1,19 @@
+# Local Postgres for development: docker compose up -d
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hiq
+      POSTGRES_PASSWORD: hiq
+      POSTGRES_DB: hiq_shop
+    ports:
+      - "5432:5432"
+    volumes:
+      - hiq-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hiq -d hiq_shop"]
+      interval: 5s
+      retries: 10
+volumes:
+  hiq-db:

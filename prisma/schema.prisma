@@ -1,0 +1,497 @@
+// HIQ Shop database. Mirrors apps/docs/DATABASE.md.
+// Money is stored as integer centavos (PHP). A null price, interval or spec means [TBC] on the site.
+// Status-like columns are plain strings; the allowed values live in src/common/constants.ts.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────── Customers and sign-in ─────────────────────────
+
+model Customer {
+  id              String    @id @default(uuid()) @db.Uuid
+  firstName       String    @map("first_name")
+  lastName        String    @map("last_name")
+  email           String    @unique
+  phone           String
+  passwordHash    String?   @map("password_hash") // null if the customer only signs in with one-time codes
+  marketingOptIn  Boolean   @default(false) @map("marketing_opt_in")
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  addresses           Address[]
+  otps                AuthOtp[]
+  orders              Order[]
+  units               Unit[]
+  bookings            ServiceBooking[]
+  subscriptions       Subscription[]
+  loyaltyTransactions LoyaltyTransaction[]
+
+  @@map("customers")
+}
+
+model AuthOtp {
+  id          String    @id @default(uuid()) @db.Uuid
+  customerId  String?   @map("customer_id") @db.Uuid
+  channel     String // sms | email
+  destination String
+  codeHash    String    @map("code_hash")
+  expiresAt   DateTime  @map("expires_at")
+  usedAt      DateTime? @map("used_at")
+  attempts    Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([destination])
+  @@map("auth_otps")
+}
+
+model Address {
+  id         String   @id @default(uuid()) @db.Uuid
+  customerId String   @map("customer_id") @db.Uuid
+  label      String?
+  line1      String
+  line2      String?
+  city       String
+  province   String
+  postal     String?
+  isDefault  Boolean  @default(false) @map("is_default")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  customer Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  units    Unit[]
+  bookings ServiceBooking[]
+
+  @@index([customerId])
+  @@map("addresses")
+}
+
+// ───────────────────────── Catalogue ─────────────────────────
+
+model Product {
+  id             String   @id @default(uuid()) @db.Uuid
+  slug           String   @unique // never changes: links, the quiz and filter compatibility point to it
+  model          String
+  category       String
+  channel        String // shop | quote
+  hotCold        Boolean  @default(false) @map("hot_cold")
+  install        String
+  tdsLimit       Int?     @map("tds_limit")
+  isEntry        Boolean  @default(false) @map("is_entry")
+  isBottleless   Boolean  @default(false) @map("is_bottleless")
+  isTableTop     Boolean  @default(false) @map("is_table_top")
+  isOffice       Boolean  @default(false) @map("is_office")
+  summary        String
+  highlights     Json     @default("[]")
+  priceCentavos  Int?     @map("price_centavos")
+  warrantyMonths Int?     @map("warranty_months")
+  warrantyTbc    Boolean  @default(false) @map("warranty_tbc")
+  storeUrl       String?  @map("store_url")
+  featuredRank   Int?     @map("featured_rank")
+  isHidden       Boolean  @default(false) @map("is_hidden")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  images         ProductImage[]
+  specs          ProductSpec[]
+  needs          ProductNeed[]
+  filtrations    ProductFiltration[]
+  configurations ProductConfiguration[]
+  compatibleWith FilterCompatibility[]
+  orderLines     OrderLine[]
+  units          Unit[]
+  leads          Lead[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  src       String
+  alt       String
+  sortOrder Int      @default(0) @map("sort_order") // 0 = main photo
+  createdAt DateTime @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model ProductSpec {
+  id        String  @id @default(uuid()) @db.Uuid
+  productId String  @map("product_id") @db.Uuid
+  specKey   String  @map("spec_key")
+  specValue String? @map("spec_value") // null = TBC
+  sortOrder Int     @default(0) @map("sort_order")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, specKey])
+  @@map("product_specs")
+}
+
+model Need {
+  id       String        @id @default(uuid()) @db.Uuid
+  code     String        @unique // home | condo | office | business
+  label    String
+  products ProductNeed[]
+
+  @@map("needs")
+}
+
+model ProductNeed {
+  productId String @map("product_id") @db.Uuid
+  needId    String @map("need_id") @db.Uuid
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  need    Need    @relation(fields: [needId], references: [id], onDelete: Cascade)
+
+  @@id([productId, needId])
+  @@map("product_needs")
+}
+
+model FiltrationType {
+  id       String              @id @default(uuid()) @db.Uuid
+  code     String              @unique // UF | Nano | RO | UV | Alkaline
+  label    String
+  products ProductFiltration[]
+
+  @@map("filtration_types")
+}
+
+model ProductFiltration {
+  productId        String @map("product_id") @db.Uuid
+  filtrationTypeId String @map("filtration_type_id") @db.Uuid
+
+  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  filtrationType FiltrationType @relation(fields: [filtrationTypeId], references: [id], onDelete: Cascade)
+
+  @@id([productId, filtrationTypeId])
+  @@map("product_filtrations")
+}
+
+model Configuration {
+  id       String                 @id @default(uuid()) @db.Uuid
+  name     String                 @unique
+  products ProductConfiguration[]
+
+  @@map("configurations")
+}
+
+model ProductConfiguration {
+  productId       String @map("product_id") @db.Uuid
+  configurationId String @map("configuration_id") @db.Uuid
+  sortOrder       Int    @default(0) @map("sort_order")
+
+  product       Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  configuration Configuration @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+
+  @@id([productId, configurationId])
+  @@map("product_configurations")
+}
+
+model FilterSku {
+  id             String   @id @default(uuid()) @db.Uuid
+  sku            String // not unique yet: every SKU is still "[FILTER SKU TBC]"
+  name           String
+  stage          String
+  intervalMonths Int?     @map("interval_months") // null = TBC
+  priceCentavos  Int?     @map("price_centavos") // null = TBC
+  note           String?
+  sortOrder      Int      @default(0) @map("sort_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  compatibleWith    FilterCompatibility[]
+  orderLines        OrderLine[]
+  reminders         FilterReminder[]
+  subscriptionItems SubscriptionItem[]
+
+  @@map("filter_skus")
+}
+
+model FilterCompatibility {
+  filterSkuId String @map("filter_sku_id") @db.Uuid
+  productId   String @map("product_id") @db.Uuid
+
+  filterSku FilterSku @relation(fields: [filterSkuId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([filterSkuId, productId])
+  @@map("filter_compatibility")
+}
+
+model SitePhoto {
+  id        String   @id @default(uuid()) @db.Uuid
+  photoKey  String   @unique @map("photo_key")
+  src       String?
+  alt       String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_photos")
+}
+
+// ───────────────────────── Orders ─────────────────────────
+
+model Order {
+  id                   String    @id @default(uuid()) @db.Uuid
+  orderNumber          String    @unique @map("order_number") // HIQ-XXXXXX
+  customerId           String?   @map("customer_id") @db.Uuid // null = guest checkout
+  contactName          String    @map("contact_name")
+  contactEmail         String    @map("contact_email")
+  contactPhone         String    @map("contact_phone")
+  shipLine1            String    @map("ship_line1")
+  shipCity             String    @map("ship_city")
+  shipProvince         String    @map("ship_province")
+  shipPostal           String?   @map("ship_postal")
+  status               String    @default("pending")
+  subtotalCentavos     Int       @map("subtotal_centavos")
+  deliveryFeeCentavos  Int?      @map("delivery_fee_centavos") // null = TBC
+  totalCentavos        Int       @map("total_centavos")
+  requiresQuote        Boolean   @default(false) @map("requires_quote") // a line has no confirmed price
+  paymentMethod        String    @map("payment_method")
+  platformOrderRef     String?   @map("platform_order_ref")
+  installPreferredDate DateTime? @map("install_preferred_date") @db.Date
+  installPreferredSlot String?   @map("install_preferred_slot")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  customer            Customer?            @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  lines               OrderLine[]
+  units               Unit[]
+  loyaltyTransactions LoyaltyTransaction[]
+
+  @@index([customerId])
+  @@map("orders")
+}
+
+model OrderLine {
+  id                String  @id @default(uuid()) @db.Uuid
+  orderId           String  @map("order_id") @db.Uuid
+  productId         String? @map("product_id") @db.Uuid // null if filter line
+  filterSkuId       String? @map("filter_sku_id") @db.Uuid // null if product line
+  name              String // snapshot of the product or filter name
+  mode              String  @default("buy") // buy | rent
+  configuration     String?
+  withInstallation  Boolean @default(false) @map("with_installation")
+  qty               Int
+  unitPriceCentavos Int?    @map("unit_price_centavos") // null = quote
+
+  order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product?   @relation(fields: [productId], references: [id], onDelete: SetNull)
+  filterSku FilterSku? @relation(fields: [filterSkuId], references: [id], onDelete: SetNull)
+
+  @@map("order_lines")
+}
+
+// ───────────────────────── After-sales ─────────────────────────
+
+model Unit {
+  id              String    @id @default(uuid()) @db.Uuid
+  customerId      String    @map("customer_id") @db.Uuid
+  productId       String    @map("product_id") @db.Uuid
+  addressId       String    @map("address_id") @db.Uuid
+  orderId         String?   @map("order_id") @db.Uuid // null if bought offline
+  configuration   String?
+  serialNumber    String?   @map("serial_number")
+  installedAt     DateTime  @map("installed_at") @db.Date
+  nextFilterDueAt DateTime? @map("next_filter_due_at") @db.Date
+  warrantyEndsAt  DateTime? @map("warranty_ends_at") @db.Date
+  warrantyStatus  String    @default("active") @map("warranty_status")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  customer       Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product        Product          @relation(fields: [productId], references: [id])
+  address        Address          @relation(fields: [addressId], references: [id])
+  order          Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  serviceHistory ServiceHistory[]
+  bookings       ServiceBooking[]
+  warrantyClaims WarrantyClaim[]
+  reminders      FilterReminder[]
+  subscriptions  Subscription[]
+
+  @@index([customerId])
+  @@map("units")
+}
+
+model ServiceHistory {
+  id             String   @id @default(uuid()) @db.Uuid
+  unitId         String   @map("unit_id") @db.Uuid
+  bookingId      String?  @unique @map("booking_id") @db.Uuid // null if not booked online
+  serviceDate    DateTime @map("service_date") @db.Date
+  serviceType    String   @map("service_type")
+  notes          String?
+  technicianName String?  @map("technician_name")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  unit    Unit            @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  booking ServiceBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@map("service_history")
+}
+
+model ServiceBooking {
+  id            String    @id @default(uuid()) @db.Uuid
+  customerId    String?   @map("customer_id") @db.Uuid // null = guest
+  unitId        String?   @map("unit_id") @db.Uuid // null = new installation
+  addressId     String?   @map("address_id") @db.Uuid // null = guest
+  contactName   String    @map("contact_name")
+  contactPhone  String    @map("contact_phone")
+  contactEmail  String?   @map("contact_email")
+  visitAddress  String    @map("visit_address") // snapshot
+  service       String
+  preferredDate DateTime? @map("preferred_date") @db.Date
+  preferredSlot String?   @map("preferred_slot")
+  notes         String?
+  status        String    @default("requested")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  customer      Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  unit          Unit?           @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  address       Address?        @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  history       ServiceHistory?
+  warrantyClaim WarrantyClaim?
+
+  @@index([customerId])
+  @@map("service_bookings")
+}
+
+model WarrantyClaim {
+  id          String   @id @default(uuid()) @db.Uuid
+  unitId      String   @map("unit_id") @db.Uuid
+  bookingId   String?  @unique @map("booking_id") @db.Uuid
+  description String
+  status      String   @default("submitted")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  unit    Unit            @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  booking ServiceBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@map("warranty_claims")
+}
+
+model FilterReminder {
+  id          String    @id @default(uuid()) @db.Uuid
+  unitId      String    @map("unit_id") @db.Uuid
+  filterSkuId String?   @map("filter_sku_id") @db.Uuid // null = all filters on the unit
+  dueAt       DateTime  @map("due_at") @db.Date
+  sent30dAt   DateTime? @map("sent_30d_at")
+  sent7dAt    DateTime? @map("sent_7d_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  unit      Unit       @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  filterSku FilterSku? @relation(fields: [filterSkuId], references: [id], onDelete: SetNull)
+
+  @@index([dueAt])
+  @@map("filter_reminders")
+}
+
+model Subscription {
+  id             String   @id @default(uuid()) @db.Uuid
+  customerId     String   @map("customer_id") @db.Uuid
+  unitId         String   @map("unit_id") @db.Uuid
+  intervalMonths Int      @map("interval_months")
+  nextShipAt     DateTime @map("next_ship_at") @db.Date
+  status         String   @default("active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  customer Customer           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  unit     Unit               @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  items    SubscriptionItem[]
+
+  @@map("subscriptions")
+}
+
+model SubscriptionItem {
+  subscriptionId String @map("subscription_id") @db.Uuid
+  filterSkuId    String @map("filter_sku_id") @db.Uuid
+  qty            Int    @default(1)
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  filterSku    FilterSku    @relation(fields: [filterSkuId], references: [id], onDelete: Cascade)
+
+  @@id([subscriptionId, filterSkuId])
+  @@map("subscription_items")
+}
+
+model LoyaltyTransaction {
+  id         String   @id @default(uuid()) @db.Uuid
+  customerId String   @map("customer_id") @db.Uuid
+  orderId    String?  @map("order_id") @db.Uuid // null for manual adjustments
+  points     Int // positive earns, negative redeems
+  reason     String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  order    Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@map("loyalty_transactions")
+}
+
+// ───────────────────────── Sales and admin ─────────────────────────
+
+model Lead {
+  id          String   @id @default(uuid()) @db.Uuid
+  leadType    String   @map("lead_type") // quote | rental | contact | newsletter | business
+  name        String?
+  email       String?
+  phone       String?
+  company     String?
+  message     String?
+  productId   String?  @map("product_id") @db.Uuid
+  details     Json     @default("{}") // any extra form fields
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  status      String   @default("new")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@map("leads")
+}
+
+model AdminUser {
+  id           String     @id @default(uuid()) @db.Uuid
+  email        String     @unique
+  name         String
+  passwordHash String     @map("password_hash")
+  role         String     @default("editor") // owner | editor
+  lastLoginAt  DateTime?  @map("last_login_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  auditLog     AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  adminUserId String?  @map("admin_user_id") @db.Uuid
+  entity      String
+  entityId    String?  @map("entity_id")
+  action      String // create | update | delete | import | reset
+  changes     Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  adminUser AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@map("audit_log")
+}

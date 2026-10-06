@@ -1,0 +1,586 @@
+[
+  {
+    "slug": "hw-np-100m",
+    "model": "HW NP 100M",
+    "category": "under-sink",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo"
+    ],
+    "filtration": [
+      "RO"
+    ],
+    "configurations": [
+      "Standard",
+      "Alkaline",
+      "Specialised"
+    ],
+    "hotCold": false,
+    "install": "Under the sink",
+    "summary": "Reverse osmosis under the sink, for homes where the water test calls for the deepest purification.",
+    "highlights": [
+      "Home use",
+      "150 gallons per day",
+      "Standard, alkaline or specialised filter configuration"
+    ],
+    "specs": {
+      "Filtration": "Reverse Osmosis (RO)",
+      "Capacity": "150 gallons/day",
+      "Filter configuration": "Standard, alkaline or specialised",
+      "Installation": "Under the sink, plumbed in",
+      "Dimensions": null,
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 1
+  },
+  {
+    "slug": "hw-np-200",
+    "model": "HW NP 200",
+    "category": "under-sink",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo"
+    ],
+    "filtration": [
+      "UF",
+      "Nano"
+    ],
+    "configurations": [
+      "UF",
+      "Nano"
+    ],
+    "hotCold": false,
+    "install": "Under the sink",
+    "tdsLimit": 190,
+    "summary": "Standard under-sink filtration for water that already tests below 190 ppm TDS.",
+    "highlights": [
+      "Standard filtration",
+      "UF or Nano configuration",
+      "Inlet water must test below 190 ppm TDS"
+    ],
+    "specs": {
+      "Filtration": "UF or Nano",
+      "Inlet water requirement": "Below 190 ppm TDS",
+      "Installation": "Under the sink, plumbed in",
+      "Capacity": null,
+      "Dimensions": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 2
+  },
+  {
+    "slug": "vp-cu-200",
+    "model": "VP-CU-200",
+    "category": "under-sink",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo"
+    ],
+    "filtration": [
+      "UF",
+      "Nano",
+      "Alkaline"
+    ],
+    "configurations": [
+      "UF",
+      "Nano",
+      "UF + Alkaline",
+      "Nano + Alkaline"
+    ],
+    "hotCold": false,
+    "install": "Under the sink",
+    "entry": true,
+    "summary": "Our entry-level under-sink system, with an optional alkaline stage.",
+    "highlights": [
+      "Entry-level under-sink system",
+      "UF or Nano, optional alkaline",
+      "4 or 5 filters"
+    ],
+    "specs": {
+      "Filtration": "UF or Nano, optional Alkaline",
+      "Number of filters": "4 or 5",
+      "Installation": "Under the sink, plumbed in",
+      "Capacity": null,
+      "Dimensions": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 3
+  },
+  {
+    "slug": "hwlp-uv-hq9",
+    "model": "HWLP UV (HQ9)",
+    "category": "countertop",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo",
+      "office"
+    ],
+    "filtration": [
+      "UF",
+      "UV"
+    ],
+    "configurations": [
+      "UF + UV"
+    ],
+    "hotCold": false,
+    "install": "On the counter",
+    "summary": "A countertop unit with an added UV stage, a tempered glass front and an LED display.",
+    "highlights": [
+      "For home or office",
+      "Uses HQ9 high-flow filters",
+      "Tempered glass front",
+      "LED display"
+    ],
+    "specs": {
+      "Filtration": "UF + UV",
+      "Filters": "HQ9 high-flow",
+      "Front panel": "Tempered glass",
+      "Display": "LED",
+      "Dimensions": null,
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 4
+  },
+  {
+    "slug": "eghw-200",
+    "model": "EGHW-200",
+    "category": "countertop",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo"
+    ],
+    "filtration": [
+      "UF",
+      "Alkaline"
+    ],
+    "configurations": [
+      "Multi UF",
+      "Multi UF + Eco Mac",
+      "Multi UF + Bio Alkaline"
+    ],
+    "hotCold": false,
+    "install": "On the counter",
+    "summary": "Our smallest countertop system. It needs no power, and a battery blue light shows while it dispenses.",
+    "highlights": [
+      "Smallest countertop system",
+      "No power required",
+      "Battery blue light when dispensing",
+      "Eco Mac or Bio Alkaline options"
+    ],
+    "specs": {
+      "Filtration": "Multi UF",
+      "Options": "Eco Mac / Bio Alkaline",
+      "Power": "Not required (battery-powered light)",
+      "Dimensions": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 5
+  },
+  {
+    "slug": "w2-160p",
+    "model": "W2-160P",
+    "category": "dispensers",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo",
+      "office"
+    ],
+    "filtration": [
+      "UF",
+      "Nano"
+    ],
+    "configurations": [
+      "UF",
+      "Nano"
+    ],
+    "hotCold": true,
+    "install": "Freestanding",
+    "bottleless": true,
+    "summary": "A bottleless hot and cold dispenser, plumbed in. Available with UF or Nano filtration (not RO).",
+    "highlights": [
+      "Bottleless, plumbed-in",
+      "Hot & cold",
+      "UF or Nano (not RO)"
+    ],
+    "specs": {
+      "Filtration": "UF or Nano (not RO)",
+      "Dimensions (W × D × H)": "340 × 336 × 984 mm",
+      "Cold tank": "3 L",
+      "Hot tank": "2 L",
+      "Installation": "Freestanding, plumbed in",
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 6
+  },
+  {
+    "slug": "w2-170p",
+    "model": "W2-170P",
+    "category": "dispensers",
+    "channel": "shop",
+    "needs": [
+      "home",
+      "condo",
+      "office"
+    ],
+    "filtration": [
+      "UF",
+      "RO"
+    ],
+    "configurations": [
+      "UF",
+      "RO"
+    ],
+    "hotCold": true,
+    "install": "Freestanding",
+    "bottleless": true,
+    "summary": "The successor to the W2-160P, with a larger cold tank and a choice of UF or RO.",
+    "highlights": [
+      "Successor to W2-160P",
+      "Hot & cold",
+      "UF or RO",
+      "5 L cold tank"
+    ],
+    "specs": {
+      "Filtration": "UF or RO",
+      "Dimensions (W × D × H)": "310 × 400 × 1025 mm",
+      "Cold tank": "5 L",
+      "Hot tank": "2 L",
+      "Installation": "Freestanding, plumbed in",
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 7
+  },
+  {
+    "slug": "hw-110",
+    "model": "HW-110",
+    "category": "dispensers",
+    "channel": "shop",
+    "needs": [
+      "office",
+      "business"
+    ],
+    "filtration": [
+      "RO",
+      "Nano",
+      "UF"
+    ],
+    "configurations": [
+      "RO",
+      "Nano",
+      "UF"
+    ],
+    "hotCold": true,
+    "install": "Freestanding",
+    "tableTop": true,
+    "office": true,
+    "summary": "An office hot and cold dispenser with RO, Nano or UF filtration. A table-top version is available.",
+    "highlights": [
+      "Office dispenser",
+      "RO, Nano or UF",
+      "Table-top version available"
+    ],
+    "specs": {
+      "Filtration": "RO, Nano or UF",
+      "Dimensions (W × D × H)": "310 × 315 × 1100 mm",
+      "Cold tank": "4 L",
+      "Hot tank": "2 L",
+      "Versions": "Freestanding or table-top",
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 8
+  },
+  {
+    "slug": "hwj-l110",
+    "model": "HWJ-L110",
+    "category": "dispensers",
+    "channel": "shop",
+    "needs": [
+      "office",
+      "business"
+    ],
+    "filtration": [
+      "RO",
+      "Nano",
+      "UF"
+    ],
+    "configurations": [
+      "RO",
+      "Nano",
+      "UF"
+    ],
+    "hotCold": true,
+    "install": "Freestanding",
+    "office": true,
+    "summary": "A lobby-grade dispenser with Swarovski design features and a 4.5 L reservoir.",
+    "highlights": [
+      "Office and lobby dispenser",
+      "Swarovski design features",
+      "RO, Nano or UF"
+    ],
+    "specs": {
+      "Filtration": "RO, Nano or UF",
+      "Dimensions (W × D × H)": "310 × 375 × 1100 mm",
+      "Cold tank": "3 L",
+      "Hot tank": "2 L",
+      "Reservoir": "4.5 L",
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 9
+  },
+  {
+    "slug": "infinite-l20",
+    "model": "Infinite L20",
+    "category": "dispensers",
+    "channel": "shop",
+    "needs": [
+      "office",
+      "business"
+    ],
+    "filtration": [
+      "UF",
+      "RO"
+    ],
+    "configurations": [
+      "UF",
+      "RO"
+    ],
+    "hotCold": true,
+    "install": "Freestanding",
+    "tableTop": true,
+    "office": true,
+    "summary": "A compact office dispenser with UF or RO. A table-top version is available.",
+    "highlights": [
+      "Office dispenser",
+      "UF or RO",
+      "Table-top version available"
+    ],
+    "specs": {
+      "Filtration": "UF or RO",
+      "Dimensions (W × D × H)": "310 × 322 × 1025 mm",
+      "Cold tank": "3 L",
+      "Hot tank": "2 L",
+      "Versions": "Freestanding or table-top",
+      "Power": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 10
+  },
+  {
+    "slug": "whns-01",
+    "model": "WHNS-01",
+    "category": "whole-house",
+    "channel": "shop",
+    "needs": [
+      "home"
+    ],
+    "filtration": [
+      "Nano"
+    ],
+    "configurations": [
+      "Nano"
+    ],
+    "hotCold": false,
+    "install": "Point of entry",
+    "summary": "A point-of-entry Nano system that filters the water for drinking, cooking, washing and bathing.",
+    "highlights": [
+      "Whole-house, point-of-entry",
+      "Nano filtration",
+      "Drinking, cooking, washing and bathing"
+    ],
+    "specs": {
+      "Filtration": "Nano",
+      "Installation": "Point of entry (whole house)",
+      "Capacity": null,
+      "Dimensions": null
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 11
+  },
+  {
+    "slug": "hq9-high-flow",
+    "model": "HQ9 High Flow Filters",
+    "category": "commercial",
+    "channel": "shop",
+    "needs": [
+      "business"
+    ],
+    "filtration": [
+      "UF",
+      "RO"
+    ],
+    "configurations": [
+      "3-in-1 Eco Mac",
+      "Antiscalant",
+      "UF",
+      "RO (300 GPD, no pump)"
+    ],
+    "hotCold": false,
+    "install": "Commercial / F&B line",
+    "summary": "Quick-change, high-capacity filters for cafés, restaurants and other F&B operations.",
+    "highlights": [
+      "Quick-change",
+      "High capacity",
+      "3-in-1 Eco Mac, Antiscalant, UF or RO (300 GPD, no pump)"
+    ],
+    "specs": {
+      "Options": "3-in-1 Eco Mac, Antiscalant, UF, RO",
+      "RO output": "300 GPD, no pump",
+      "Use": "Commercial / F&B"
+    },
+    "price": null,
+    "warrantyTbc": true,
+    "storeUrl": null,
+    "featured": 12
+  },
+  {
+    "slug": "hcro-300g",
+    "model": "HCRO-300G",
+    "category": "commercial",
+    "channel": "quote",
+    "needs": [
+      "business"
+    ],
+    "filtration": [
+      "RO"
+    ],
+    "configurations": [
+      "6-stage RO"
+    ],
+    "hotCold": false,
+    "install": "Commercial",
+    "summary": "6-stage commercial RO with an 11 G tank. It powers the HIQ Water Station.",
+    "highlights": [
+      "6-stage RO",
+      "11 G tank",
+      "~1.1 ton/day",
+      "Powers the HIQ Water Station"
+    ],
+    "specs": {
+      "Filtration": "6-stage RO",
+      "Tank": "11 G",
+      "Output": "~1.1 ton/day"
+    },
+    "price": null,
+    "storeUrl": null
+  },
+  {
+    "slug": "hcro-400-600-900g",
+    "model": "HCRO-400/600/900G",
+    "category": "commercial",
+    "channel": "quote",
+    "needs": [
+      "business"
+    ],
+    "filtration": [
+      "RO"
+    ],
+    "configurations": [
+      "RO"
+    ],
+    "hotCold": false,
+    "install": "Commercial",
+    "summary": "Higher-output commercial RO with automatic self-flushing.",
+    "highlights": [
+      "2.2–3 ton/day",
+      "Auto self-flushing"
+    ],
+    "specs": {
+      "Filtration": "RO",
+      "Output": "2.2–3 ton/day",
+      "Maintenance": "Auto self-flushing"
+    },
+    "price": null,
+    "storeUrl": null
+  },
+  {
+    "slug": "hiro-hinro",
+    "model": "HIRO 5–20 Ton · HINRO 50–200 Ton",
+    "category": "industrial",
+    "channel": "quote",
+    "needs": [
+      "business"
+    ],
+    "filtration": [
+      "RO"
+    ],
+    "configurations": [
+      "RO"
+    ],
+    "hotCold": false,
+    "install": "Industrial",
+    "summary": "Industrial reverse osmosis plants, sized to your site.",
+    "highlights": [
+      "HIRO 5–20 ton",
+      "HINRO 50–200 ton",
+      "Quote only"
+    ],
+    "specs": {
+      "Filtration": "RO",
+      "Range": "5–200 ton"
+    },
+    "price": null,
+    "storeUrl": null
+  },
+  {
+    "slug": "emro-hpro",
+    "model": "EMRO / HPRO series",
+    "category": "emergency",
+    "channel": "quote",
+    "needs": [
+      "business"
+    ],
+    "filtration": [
+      "RO"
+    ],
+    "configurations": [
+      "RO"
+    ],
+    "hotCold": false,
+    "install": "Emergency / portable",
+    "summary": "Emergency water systems using reverse osmosis.",
+    "highlights": [
+      "Emergency water",
+      "RO",
+      "Quote only"
+    ],
+    "specs": {
+      "Filtration": "RO"
+    },
+    "price": null,
+    "storeUrl": null
+  }
+]

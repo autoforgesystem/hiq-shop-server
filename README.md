@@ -1,0 +1,110 @@
+# HIQ Shop API
+
+Backend for the HIQ Shop front-end in `../apps`. It handles customer accounts, the product catalogue, orders, service bookings, filter reminders, the site's forms (leads) and the shop admin.
+
+**Stack:** NestJS 12 · Prisma 7 · PostgreSQL · JWT sign-in · class-validator · Swagger. The code uses ES modules, so local imports end in `.js`.
+
+## Run it
+
+You need Node 22+ and a Postgres database.
+
+```bash
+npm install                 # also generates the Prisma client
+cp .env.example .env        # then fill in JWT_SECRET and ADMIN_PASSWORD
+npm run db:up               # Postgres 17 in Docker (docker-compose.yml)
+npm run db:migrate          # create the tables
+npm run db:seed             # catalogue, first admin user, demo customers
+npm run start:dev           # http://localhost:3000/api
+```
+
+- API docs (Swagger): http://localhost:3000/api/docs
+- Health check: http://localhost:3000/api/health
+
+**No Docker?** `npm run db:local` starts an in-process Postgres (PGlite) on port 5433 that keeps its data in `.pglite/`. In `.env`, set `DATABASE_URL=postgresql://postgres:postgres@localhost:5433/postgres` and `DB_POOL_MAX=1`. It is for development only.
+
+**Connect the front-end:** in `../apps/.env`, set `VITE_API_URL=http://localhost:3000/api` and restart `npm run dev`. Without that setting the front-end keeps running on its own mock data.
+
+**Seeded logins** (with `SEED_DEMO=true`):
+
+| Who | Email | Password |
+|---|---|---|
+| Admin (owner) | `ADMIN_EMAIL` in `.env` | `ADMIN_PASSWORD` in `.env` |
+| Demo customer with 2 units, an order and a booking | `juan@example.com` | `demo1234` |
+| Demo customer, empty account | `maria@example.com` | `demo1234` |
+
+## Scripts
+
+| Script | What it does |
+|---|---|
+| `start:dev` / `start:prod` | Run with reload / run the build in `dist/` |
+| `build` | Compile to `dist/` |
+| `db:up` | Start Postgres in Docker |
+| `db:local` | Start PGlite instead (no Docker) |
+| `db:migrate` | Apply migrations (`prisma migrate deploy`) |
+| `db:migrate:dev` | Create a new migration after editing `prisma/schema.prisma` |
+| `db:seed` | Load the catalogue, admin and demo data. Safe to run again. |
+| `db:studio` | Browse the database in Prisma Studio |
+| `test:e2e` | End-to-end tests (starts its own in-memory Postgres) |
+| `lint` | oxlint |
+
+## Endpoints
+
+All routes start with `/api`. Prices are in **pesos** in requests and responses (stored as centavos). `null` means **[TBC]**, as on the site. Catalogue responses use the same shapes as `apps/src/data/types.ts`.
+
+| Area | Routes | Who |
+|---|---|---|
+| Sign-in | `POST /auth/register` · `POST /auth/login` · `POST /auth/otp` · `POST /auth/verify` · `GET /auth/me` | Public / customer |
+| Account | `GET/PATCH /me` · `POST /me/password` · `GET /me/units` · `GET /me/filters/due` · `GET /me/orders` · `GET /me/bookings` · `GET /me/warranty-claims` · `/me/addresses` (CRUD) · `/me/subscriptions` · `GET /me/loyalty` | Customer |
+| Catalogue | `GET /catalog` · `GET /products` · `GET /products/:slug` · `GET /filters?model=` | Public |
+| Checkout | `POST /orders` · `GET /orders/:orderNumber?email=` | Guest or customer |
+| Service | `POST /bookings` · `POST /warranty-claims` · `POST /service-area/check` | Guest / customer |
+| Forms | `POST /leads` (quote, rental, contact, newsletter, business) | Public |
+| Admin | `POST /admin/auth/login` · `/admin/catalog` · `/admin/products` · `/admin/filters` · `/admin/photos` · `POST /admin/uploads` · `/admin/orders` · `/admin/units` · `/admin/bookings` · `/admin/warranty-claims` · `/admin/leads` · `/admin/customers` · `GET /admin/audit-log` · `POST /admin/reminders/run` | Admin (`owner` for reset and audit log) |
+
+Send the token from sign-in as `Authorization: Bearer <token>`.
+
+## How it works
+
+- **Pricing is server-side.** `POST /orders` takes product slugs or filter ids and quantities, and looks prices up in the database. Lines without a confirmed price, and all rentals, mark the order `requiresQuote`.
+- **Units drive after-sales.** An admin registers an installed unit (`POST /admin/units`). Its next filter date is the install date plus the shortest known filter interval. Marking a filter-replacement booking `done` logs it and restarts the schedule.
+- **Reminders** run daily at 9:00 Manila time and send each reminder once, 30 days and then 7 days before filters are due. Run them by hand with `POST /admin/reminders/run`.
+- **Catalogue changes are audited.** Every admin change is written to `audit_log`. Products that installed units still use are hidden rather than deleted.
+- **Security:**
+  - Passwords are hashed with bcrypt.
+  - Sign-in and form routes are rate-limited.
+  - Unknown request fields are stripped.
+  - Uploads must be real JPEG, PNG, WebP or AVIF files (5 MB max).
+  - CORS only allows `CORS_ORIGINS`.
+
+## Still to connect or confirm
+
+| Item | Where |
+|---|---|
+| Email and SMS provider. Messages (sign-in codes, reminders, order and booking confirmations, new leads) are only written to the log for now. | `src/notifications/notifications.service.ts` |
+| Service areas `[TBC]`. Until set, the check answers "HIQ will call to confirm". | `SERVICE_AREAS` in `.env` |
+| Subscribe & Save `[CONFIRM SUBSCRIPTION OFFER]`. Off by default. | `SUBSCRIPTIONS_ENABLED` |
+| Delivery and installation fees `[TBC]` | `src/orders/orders.service.ts` |
+| Payment. Orders record the chosen method; taking payment belongs to the commerce platform. | `platformOrderRef` on orders |
+| Uploads are stored on local disk. Use object storage (e.g. S3) before running more than one server. | `src/catalog/catalog.controller.ts` |
+| Password reset by email | Not built yet; one-time-code sign-in (`/auth/otp`) works. |
+
+## Project layout
+
+```
+prisma/
+  schema.prisma            database schema (mirrors apps/docs/DATABASE.md)
+  migrations/              SQL migrations
+  seed.ts, seed-data/      catalogue exported from apps/src/data, plus demo data
+src/
+  auth/                    customer + admin sign-in, guards
+  catalog/                 storefront catalogue, admin editing, import/reset, uploads
+  orders/                  checkout and order admin
+  service/                 units, bookings, warranty claims, filter reminders
+  me/                      the signed-in customer's account
+  leads/                   site forms and service-area check
+  admin/                   customer lookup, audit log
+  common/, config/         shared constants, helpers, env validation
+test/api.e2e-spec.ts       end-to-end tests
+```
+
+`.npmrc` sets `legacy-peer-deps=true`. Without it, `npm install` crashes inside npm 10 ("Cannot read properties of null (reading 'edgesOut')") on this dependency tree.

@@ -1,0 +1,215 @@
+[
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HW NP 100M replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "hw-np-100m"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HW NP 200 replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "hw-np-200"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "VP-CU-200 filter 1",
+    "stage": "Stage 1 [TYPE TBC]",
+    "compatibleModels": [
+      "vp-cu-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "VP-CU-200 filter 2",
+    "stage": "Stage 2 [TYPE TBC]",
+    "compatibleModels": [
+      "vp-cu-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "VP-CU-200 filter 3",
+    "stage": "Stage 3 [TYPE TBC]",
+    "compatibleModels": [
+      "vp-cu-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "VP-CU-200 filter 4",
+    "stage": "Stage 4 [TYPE TBC]",
+    "compatibleModels": [
+      "vp-cu-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "VP-CU-200 alkaline filter",
+    "stage": "Stage 5 — alkaline (5-filter configuration only)",
+    "compatibleModels": [
+      "vp-cu-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HQ9 3-in-1 Eco Mac filter",
+    "stage": "3-in-1 Eco Mac",
+    "compatibleModels": [
+      "hwlp-uv-hq9",
+      "hq9-high-flow"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HQ9 Antiscalant filter",
+    "stage": "Antiscalant",
+    "compatibleModels": [
+      "hwlp-uv-hq9",
+      "hq9-high-flow"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HQ9 UF filter",
+    "stage": "UF",
+    "compatibleModels": [
+      "hwlp-uv-hq9",
+      "hq9-high-flow"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HQ9 RO (300 GPD, no pump) filter",
+    "stage": "RO (300 GPD, no pump)",
+    "compatibleModels": [
+      "hwlp-uv-hq9",
+      "hq9-high-flow"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "Confirm HWLP UV compatibility."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "EGHW-200 Multi UF filter",
+    "stage": "Multi UF",
+    "compatibleModels": [
+      "eghw-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "EGHW-200 Eco Mac filter",
+    "stage": "Eco Mac (option)",
+    "compatibleModels": [
+      "eghw-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "EGHW-200 Bio Alkaline filter",
+    "stage": "Bio Alkaline (option)",
+    "compatibleModels": [
+      "eghw-200"
+    ],
+    "intervalMonths": null,
+    "price": null
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "W2-160P replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "w2-160p"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "W2-170P replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "w2-170p"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HW-110 replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "hw-110"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "HWJ-L110 replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "hwj-l110"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "Infinite L20 replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "infinite-l20"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  },
+  {
+    "sku": "[FILTER SKU TBC]",
+    "name": "WHNS-01 replacement filter",
+    "stage": "Stage [TBC]",
+    "compatibleModels": [
+      "whns-01"
+    ],
+    "intervalMonths": null,
+    "price": null,
+    "note": "HIQ to confirm the number of stages and the filter for each one."
+  }
+]

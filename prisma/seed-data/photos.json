@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "alt": "Filtered water pouring from a kitchen faucet into a glass in a bright condo kitchen",
+    "label": "Modern Philippine condo kitchen, filtered water from the tap into a glass"
+  },
+  "family": {
+    "alt": "A family filling reusable glass bottles at their kitchen sink",
+    "label": "Filipino family filling reusable glass bottles at the kitchen sink"
+  },
+  "office": {
+    "alt": "An office pantry with a plumbed-in hot and cold water dispenser",
+    "label": "Office pantry with a bottleless hot & cold dispenser"
+  },
+  "technician": {
+    "alt": "An HIQ technician installing a water filtration system under a kitchen sink",
+    "label": "HIQ technician installing an under-sink system"
+  },
+  "glassBottles": {
+    "alt": "Reusable glass water bottles lined up on a kitchen counter",
+    "label": "Reusable glass bottles on a sunlit counter"
+  },
+  "hotel": {
+    "alt": "A hotel restaurant table set with a reusable glass water bottle",
+    "label": "Hotel table set with a branded reusable glass bottle"
+  },
+  "waterTest": {
+    "alt": "A technician measuring the TDS of tap water",
+    "label": "Technician testing tap water with a TDS meter"
+  },
+  "restaurant": {
+    "alt": "A restaurant bar counter with a commercial water filter",
+    "label": "Restaurant bar with HQ9 high-flow filtration"
+  }
+}

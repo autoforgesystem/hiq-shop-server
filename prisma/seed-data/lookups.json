@@ -1,0 +1,20 @@
+{
+  "needs": [
+    {
+      "code": "home",
+      "label": "Home"
+    },
+    {
+      "code": "condo",
+      "label": "Condo"
+    },
+    {
+      "code": "office",
+      "label": "Office"
+    },
+    {
+      "code": "business",
+      "label": "Business"
+    }
+  ]
+}

@@ -71,7 +71,7 @@ The tables are under **Databases → hiq_shop → Schemas → public → Tables*
 | `db:migrate:dev` | Create a new migration after editing `prisma/schema.prisma` |
 | `db:seed` | Load the catalogue, admin and demo data. Safe to run again. |
 | `db:seed:test` | Add test data (see below). `npm run db:seed:test -- --fresh` recreates it. |
-| `db:reset` | Drop **all** data, re-run migrations and seed. Development databases only. |
+| `db:reset` | Drop **all** data, re-run migrations and the base seed (add test data again with `db:seed:test`). Development databases only. |
 | `db:studio` | Browse the database in Prisma Studio |
 | `test:e2e` | End-to-end tests (starts its own in-memory Postgres) |
 | `lint` | oxlint |

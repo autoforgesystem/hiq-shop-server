@@ -13,7 +13,7 @@ npm install                 # also generates the Prisma client
 cp .env.example .env        # then fill in JWT_SECRET and ADMIN_PASSWORD
 npm run db:up               # Postgres 17 in Docker (docker-compose.yml)
 npm run db:migrate          # create the tables
-npm run db:seed             # catalogue, first admin user, demo customers
+npm run db:seed             # catalogue (with example spare parts), first admin user, demo customers
 npm run start:dev           # http://localhost:3000/api
 ```
 
@@ -104,11 +104,11 @@ All routes start with `/api`. Prices are in **pesos** in requests and responses 
 |---|---|---|
 | Sign-in | `POST /auth/register` · `POST /auth/login` · `POST /auth/otp` · `POST /auth/verify` · `GET /auth/me` | Public / customer |
 | Account | `GET/PATCH /me` · `POST /me/password` · `GET /me/units` · `GET /me/filters/due` · `GET /me/orders` · `GET /me/bookings` · `GET /me/warranty-claims` · `/me/addresses` (CRUD) · `/me/subscriptions` · `GET /me/loyalty` | Customer |
-| Catalogue | `GET /catalog` · `GET /products` · `GET /products/:slug` · `GET /filters?model=` | Public |
+| Catalogue | `GET /catalog` · `GET /products` · `GET /products/:slug` · `GET /filters?model=` · `GET /parts?category=&model=` · `GET /parts/:slug` | Public |
 | Checkout | `POST /orders` · `GET /orders/:orderNumber?email=` | Guest or customer |
 | Service | `POST /bookings` · `POST /warranty-claims` · `POST /service-area/check` | Guest / customer |
 | Forms | `POST /leads` (quote, rental, contact, newsletter, business) | Public |
-| Admin | `POST /admin/auth/login` · `/admin/catalog` · `/admin/products` · `/admin/filters` · `/admin/photos` · `POST /admin/uploads` · `/admin/orders` · `/admin/units` · `/admin/bookings` · `/admin/warranty-claims` · `/admin/leads` · `/admin/customers` · `GET /admin/audit-log` · `POST /admin/reminders/run` | Admin (`owner` for reset and audit log) |
+| Admin | `POST /admin/auth/login` · `/admin/catalog` · `/admin/products` · `/admin/filters` · `/admin/parts` · `/admin/photos` · `POST /admin/uploads` · `/admin/orders` · `/admin/units` · `/admin/bookings` · `/admin/warranty-claims` · `/admin/leads` · `/admin/customers` · `GET /admin/audit-log` · `POST /admin/reminders/run` | Admin (`owner` for reset and audit log) |
 
 Send the token from sign-in as `Authorization: Bearer <token>`.
 

@@ -21,7 +21,19 @@ async function seedCatalog() {
     await writer.seedNeeds(tx, seed.needs);
     return writer.replaceAll(tx, seed);
   });
-  console.log(`Catalogue: ${r.products} products, ${r.filters} filters, ${Object.keys(seed.photos).length} photo slots`);
+  console.log(`Catalogue: ${r.products} products, ${r.filters} filters, ${r.parts} spare parts, ${Object.keys(seed.photos).length} photo slots`);
+}
+
+/**
+ * Databases loaded before spare parts existed get the example parts once. Skipped when parts exist or
+ * an admin has already added or deleted parts (the audit log has an entry), so deleted examples stay deleted.
+ */
+async function seedSpareParts() {
+  if (await db.sparePart.count()) return;
+  if (await db.auditLog.count({ where: { entity: 'spare_parts' } })) return;
+  const writer = new CatalogWriter(db);
+  const n = await writer.transaction((tx) => writer.replaceSpareParts(tx, readSeedCatalog().parts));
+  console.log(`Spare parts: ${n} example parts`);
 }
 
 async function seedAdmin() {
@@ -82,6 +94,7 @@ async function seedDemo() {
 
 try {
   await seedCatalog();
+  await seedSpareParts();
   await seedAdmin();
   await seedDemo();
 } finally {

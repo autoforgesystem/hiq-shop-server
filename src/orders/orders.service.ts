@@ -18,7 +18,7 @@ export const toApiOrder = (o: OrderRow) => ({
   install: o.installPreferredDate || o.installPreferredSlot ? { date: isoDate(o.installPreferredDate), slot: o.installPreferredSlot } : null,
   lines: o.lines.map((l) => ({
     name: l.name, qty: l.qty, mode: l.mode, configuration: l.configuration, withInstallation: l.withInstallation,
-    unitPrice: toPesos(l.unitPriceCentavos), productId: l.productId, filterSkuId: l.filterSkuId,
+    unitPrice: toPesos(l.unitPriceCentavos), productId: l.productId, filterSkuId: l.filterSkuId, sparePartId: l.sparePartId,
   })),
   subtotal: toPesos(o.subtotalCentavos),
   deliveryFee: toPesos(o.deliveryFeeCentavos),
@@ -35,7 +35,14 @@ export class OrdersService {
   async create(dto: CreateOrderDto, customerId?: string) {
     const lines: Prisma.OrderLineCreateWithoutOrderInput[] = [];
     for (const l of dto.lines) {
-      if (l.productSlug && l.filterSkuId) throw new BadRequestException('A line is either a product or a filter, not both.');
+      if ([l.productSlug, l.filterSkuId, l.sparePartSlug].filter(Boolean).length > 1) throw new BadRequestException('A line is one product, filter or spare part, not several.');
+      if (l.sparePartSlug) {
+        const part = await this.db.sparePart.findFirst({ where: { slug: l.sparePartSlug, isHidden: false } });
+        if (!part) throw new BadRequestException(`Spare part "${l.sparePartSlug}" is not available.`);
+        lines.push({ sparePart: { connect: { id: part.id } }, name: part.name, qty: l.qty, mode: 'buy', unitPriceCentavos: part.priceCentavos });
+        continue;
+      }
+      if (l.qty > 20) throw new BadRequestException('Order up to 20 of each system or filter online. For more, send a quote request.');
       if (l.productSlug) {
         const p = await this.db.product.findFirst({ where: { slug: l.productSlug, isHidden: false }, include: { configurations: { include: { configuration: true } } } });
         if (!p) throw new BadRequestException(`Product "${l.productSlug}" is not available.`);

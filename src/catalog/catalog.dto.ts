@@ -3,7 +3,7 @@ import {
   ArrayMaxSize, IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Matches, Max, MaxLength, Min,
   ValidateNested, registerDecorator, type ValidationOptions,
 } from 'class-validator';
-import { CATEGORIES, CHANNELS, FILTRATION_CODES, NEED_CODES } from '../common/constants.js';
+import { CATEGORIES, CHANNELS, FILTRATION_CODES, NEED_CODES, PART_CATEGORIES, PART_UNITS } from '../common/constants.js';
 
 /** Specs are a flat map of label → value, where null means [TBC]. */
 function IsSpecMap(options?: ValidationOptions) {
@@ -63,6 +63,28 @@ export class FilterDto {
   @IsOptional() @IsString() @MaxLength(500) note?: string | null;
 }
 
+/** Same shape as `SparePart` in apps/src/data/types.ts. Prices are in pesos, per unit. */
+export class SparePartDto {
+  @IsString() @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: 'slug must be lowercase letters, numbers and hyphens' }) @MaxLength(80) slug: string;
+  @IsString() @IsNotEmpty() @MaxLength(80) sku: string;
+  @IsString() @IsNotEmpty() @MaxLength(160) name: string;
+  @IsIn(PART_CATEGORIES) category: string;
+  @IsOptional() @IsString() @MaxLength(2000) description?: string;
+  @IsObject() @IsSpecMap() specs: Record<string, string | null>;
+  @IsOptional() @IsArray() @ArrayMaxSize(12) @ValidateNested({ each: true }) @Type(() => ProductImageDto) images?: ProductImageDto[];
+  @IsIn(PART_UNITS) unit: string;
+  @IsOptional() @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) @Max(10_000_000) price: number | null;
+  /** Product slugs. Empty = fits any system. */
+  @IsArray() @ArrayMaxSize(50) @IsString({ each: true }) compatibleModels: string[];
+  @IsOptional() @IsBoolean() hidden?: boolean;
+}
+
+export class SparePartQueryDto {
+  @IsOptional() @IsIn(PART_CATEGORIES) category?: string;
+  /** Product slug: parts listed as fitting that model. */
+  @IsOptional() @IsString() @MaxLength(80) model?: string;
+}
+
 export class ImportFilterDto extends FilterDto {
   /** Existing filter id to update; anything else (e.g. "f1" from the browser admin) creates a new filter. */
   @IsOptional() @IsString() id?: string;
@@ -77,6 +99,8 @@ export class PhotoDto {
 export class CatalogImportDto {
   @IsArray() @ArrayMaxSize(500) @ValidateNested({ each: true }) @Type(() => ProductDto) products: ProductDto[];
   @IsArray() @ArrayMaxSize(2000) @ValidateNested({ each: true }) @Type(() => ImportFilterDto) filters: ImportFilterDto[];
+  /** Left out by backups made before spare parts existed; the parts already in the shop are then kept. */
+  @IsOptional() @IsArray() @ArrayMaxSize(2000) @ValidateNested({ each: true }) @Type(() => SparePartDto) parts?: SparePartDto[];
   @IsOptional() @IsObject() photos?: Record<string, PhotoDto>;
 }
 

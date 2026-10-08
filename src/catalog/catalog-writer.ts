@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import type { Prisma, PrismaClient } from '../generated/prisma/client.js';
 import { toCentavos } from '../common/util.js';
-import type { FilterDto, ImportFilterDto, PhotoDto, ProductDto } from './catalog.dto.js';
+import type { FilterDto, ImportFilterDto, PhotoDto, ProductDto, SparePartDto } from './catalog.dto.js';
 
 type Tx = Prisma.TransactionClient;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -64,15 +64,38 @@ export class CatalogWriter {
     return row;
   }
 
+  /** Creates or updates a spare part by slug. Compatible models are product slugs; none means it fits any system. */
+  async saveSparePart(tx: Tx, p: SparePartDto, sortOrder?: number) {
+    const products = await tx.product.findMany({ where: { slug: { in: p.compatibleModels } }, select: { id: true, slug: true } });
+    const missing = p.compatibleModels.filter((s) => !products.some((x) => x.slug === s));
+    if (missing.length) throw new BadRequestException(`Unknown product slug(s) in compatibleModels: ${missing.join(', ')}`);
+    const data = {
+      sku: p.sku, name: p.name, category: p.category, description: p.description ?? '', specs: p.specs, images: (p.images ?? []).map((i) => ({ src: i.src, alt: i.alt })),
+      unit: p.unit, priceCentavos: toCentavos(p.price), isHidden: !!p.hidden, ...(sortOrder != null && { sortOrder }),
+    };
+    const row = await tx.sparePart.upsert({ where: { slug: p.slug }, create: { slug: p.slug, ...data }, update: data });
+    await tx.sparePartCompatibility.deleteMany({ where: { sparePartId: row.id } });
+    if (products.length) await tx.sparePartCompatibility.createMany({ data: products.map((x) => ({ sparePartId: row.id, productId: x.id })) });
+    return row;
+  }
+
+  /** Replaces all spare parts with `parts` (import, reset and the first seed). */
+  async replaceSpareParts(tx: Tx, parts: SparePartDto[]) {
+    if (new Set(parts.map((p) => p.slug)).size !== parts.length) throw new BadRequestException('Two spare parts in the import share a slug.');
+    for (const [n, p] of parts.entries()) await this.saveSparePart(tx, p, n);
+    await tx.sparePart.deleteMany({ where: { slug: { notIn: parts.map((p) => p.slug) } } });
+    return parts.length;
+  }
+
   async savePhoto(tx: Tx, key: string, photo: PhotoDto) {
     return tx.sitePhoto.upsert({ where: { photoKey: key }, create: { photoKey: key, src: photo.src ?? null, alt: photo.alt }, update: { src: photo.src ?? null, alt: photo.alt } });
   }
 
   /**
    * Replaces the catalogue with `data` (admin import and reset). Products that installed units still point to
-   * are hidden instead of deleted; filters not in `data` are deleted.
+   * are hidden instead of deleted; filters not in `data` are deleted. Spare parts are replaced only when `data.parts` is given.
    */
-  async replaceAll(tx: Tx, data: { products: ProductDto[]; filters: ImportFilterDto[]; photos?: Record<string, PhotoDto> }) {
+  async replaceAll(tx: Tx, data: { products: ProductDto[]; filters: ImportFilterDto[]; parts?: SparePartDto[]; photos?: Record<string, PhotoDto> }) {
     const slugs = new Set(data.products.map((p) => p.slug));
     if (slugs.size !== data.products.length) throw new BadRequestException('Two products in the import share a slug.');
     for (const p of data.products) await this.saveProduct(tx, p);
@@ -88,11 +111,12 @@ export class CatalogWriter {
       kept.push((await this.saveFilter(tx, f, existing?.id, n)).id);
     }
     await tx.filterSku.deleteMany({ where: { id: { notIn: kept } } });
+    const parts = data.parts ? await this.replaceSpareParts(tx, data.parts) : await tx.sparePart.count();
 
     if (data.photos) {
       for (const [key, photo] of Object.entries(data.photos)) await this.savePhoto(tx, key, photo);
     }
-    return { products: data.products.length, hidden: keep.length, filters: kept.length };
+    return { products: data.products.length, hidden: keep.length, filters: kept.length, parts };
   }
 
   async seedNeeds(tx: Tx, needs: { code: string; label: string }[]) {

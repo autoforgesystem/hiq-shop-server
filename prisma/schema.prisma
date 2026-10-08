@@ -108,6 +108,7 @@ model Product {
   filtrations    ProductFiltration[]
   configurations ProductConfiguration[]
   compatibleWith FilterCompatibility[]
+  spareParts     SparePartCompatibility[]
   orderLines     OrderLine[]
   units          Unit[]
   leads          Lead[]
@@ -232,6 +233,42 @@ model FilterCompatibility {
   @@map("filter_compatibility")
 }
 
+// Fittings, hoses, general-purpose cartridges and other parts. Filters made for one HIQ model stay in FilterSku,
+// which drives reminders and subscriptions. Each size is its own part with its own SKU.
+model SparePart {
+  id            String   @id @default(uuid()) @db.Uuid
+  slug          String   @unique // never changes: links and cart lines point to it
+  sku           String // "[PART SKU TBC]" until HIQ confirms
+  name          String
+  category      String // fittings | hoses-tubing | filter-cartridges | faucets | valves | housings | other
+  description   String   @default("")
+  specs         Json     @default("{}") @db.Json // label → value, null = TBC. json (not jsonb) keeps the label order
+  images        Json     @default("[]") // [{ src, alt }], first one is the main photo
+  unit          String   @default("piece") // piece | meter | pack: what the price and quantity count
+  priceCentavos Int?     @map("price_centavos") // null = TBC
+  isHidden      Boolean  @default(false) @map("is_hidden")
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  compatibleWith SparePartCompatibility[] // empty = fits any system
+  orderLines     OrderLine[]
+
+  @@index([category])
+  @@map("spare_parts")
+}
+
+model SparePartCompatibility {
+  sparePartId String @map("spare_part_id") @db.Uuid
+  productId   String @map("product_id") @db.Uuid
+
+  sparePart SparePart @relation(fields: [sparePartId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([sparePartId, productId])
+  @@map("spare_part_compatibility")
+}
+
 model SitePhoto {
   id        String   @id @default(uuid()) @db.Uuid
   photoKey  String   @unique @map("photo_key")
@@ -279,9 +316,10 @@ model Order {
 model OrderLine {
   id                String  @id @default(uuid()) @db.Uuid
   orderId           String  @map("order_id") @db.Uuid
-  productId         String? @map("product_id") @db.Uuid // null if filter line
-  filterSkuId       String? @map("filter_sku_id") @db.Uuid // null if product line
-  name              String // snapshot of the product or filter name
+  productId         String? @map("product_id") @db.Uuid // set on product lines only
+  filterSkuId       String? @map("filter_sku_id") @db.Uuid // set on filter lines only
+  sparePartId       String? @map("spare_part_id") @db.Uuid // set on spare part lines only
+  name              String // snapshot of the product, filter or part name
   mode              String  @default("buy") // buy | rent
   configuration     String?
   withInstallation  Boolean @default(false) @map("with_installation")
@@ -291,6 +329,7 @@ model OrderLine {
   order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product?   @relation(fields: [productId], references: [id], onDelete: SetNull)
   filterSku FilterSku? @relation(fields: [filterSkuId], references: [id], onDelete: SetNull)
+  sparePart SparePart? @relation(fields: [sparePartId], references: [id], onDelete: SetNull)
 
   @@map("order_lines")
 }

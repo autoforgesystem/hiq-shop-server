@@ -25,11 +25,15 @@ export class InstallDto {
   @IsOptional() @IsIn(SLOTS) slot?: string;
 }
 
-/** One cart line: a product (by slug) or a replacement filter (by id). Prices are worked out on the server. */
+/**
+ * One cart line: a product (by slug), a replacement filter (by id) or a spare part (by slug). Prices are worked out on the server.
+ * Products and filters go up to 20 per line (checked in OrdersService); parts go higher for tubing by the meter and reseller packs.
+ */
 export class OrderLineDto {
-  @ValidateIf((l: OrderLineDto) => !l.filterSkuId) @IsString() @IsNotEmpty() productSlug?: string;
-  @ValidateIf((l: OrderLineDto) => !l.productSlug) @IsUUID() filterSkuId?: string;
-  @IsInt() @Min(1) @Max(20) qty: number;
+  @ValidateIf((l: OrderLineDto) => !l.filterSkuId && !l.sparePartSlug) @IsString() @IsNotEmpty() productSlug?: string;
+  @ValidateIf((l: OrderLineDto) => !l.productSlug && !l.sparePartSlug) @IsUUID() filterSkuId?: string;
+  @ValidateIf((l: OrderLineDto) => !l.productSlug && !l.filterSkuId) @IsString() @IsNotEmpty() @MaxLength(80) sparePartSlug?: string;
+  @IsInt() @Min(1) @Max(500) qty: number;
   @IsOptional() @IsIn(LINE_MODES) mode?: string;
   @IsOptional() @IsString() @MaxLength(80) configuration?: string;
   @IsOptional() @IsBoolean() withInstallation?: boolean;

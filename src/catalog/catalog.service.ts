@@ -3,9 +3,9 @@ import type { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AuditService } from '../audit/audit.service.js';
 import { CatalogWriter } from './catalog-writer.js';
-import { filterInclude, productInclude, toApiFilter, toApiProduct } from './catalog.mapper.js';
+import { filterInclude, productInclude, sparePartInclude, toApiFilter, toApiProduct, toApiSparePart } from './catalog.mapper.js';
 import { readSeedCatalog } from './seed-catalog.js';
-import type { CatalogImportDto, FilterDto, PhotoDto, ProductDto, ProductQueryDto } from './catalog.dto.js';
+import type { CatalogImportDto, FilterDto, PhotoDto, ProductDto, ProductQueryDto, SparePartDto, SparePartQueryDto } from './catalog.dto.js';
 
 @Injectable()
 export class CatalogService {
@@ -27,6 +27,11 @@ export class CatalogService {
     return rows.map(toApiFilter);
   }
 
+  private async parts(where: Prisma.SparePartWhereInput = {}) {
+    const rows = await this.db.sparePart.findMany({ where, include: sparePartInclude, orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }] });
+    return rows.map(toApiSparePart);
+  }
+
   private async photos() {
     const rows = await this.db.sitePhoto.findMany({ where: { src: { not: null } } });
     return Object.fromEntries(rows.map((r) => [r.photoKey, { src: r.src, alt: r.alt }]));
@@ -34,12 +39,13 @@ export class CatalogService {
 
   /** Everything the storefront needs in one call, same shape as `CatalogData` in the front-end. */
   async publicCatalog() {
-    const [products, filters, photos] = await Promise.all([
+    const [products, filters, parts, photos] = await Promise.all([
       this.products({ isHidden: false }),
       this.filters({ compatibleWith: { some: { product: { isHidden: false } } } }),
+      this.parts({ isHidden: false }),
       this.photos(),
     ]);
-    return { products, filters, photos };
+    return { products, filters, parts, photos };
   }
 
   listProducts(q: ProductQueryDto) {
@@ -61,11 +67,25 @@ export class CatalogService {
     return this.filters(model ? { compatibleWith: { some: { product: { slug: model, isHidden: false } } } } : { compatibleWith: { some: { product: { isHidden: false } } } });
   }
 
+  listParts(q: SparePartQueryDto) {
+    return this.parts({
+      isHidden: false,
+      ...(q.category && { category: q.category }),
+      ...(q.model && { compatibleWith: { some: { product: { slug: q.model } } } }),
+    });
+  }
+
+  async getPart(slug: string) {
+    const row = await this.db.sparePart.findFirst({ where: { slug, isHidden: false }, include: sparePartInclude });
+    if (!row) throw new NotFoundException('Spare part not found.');
+    return toApiSparePart(row);
+  }
+
   // ── Admin ──
 
   async adminCatalog() {
-    const [products, filters, photoRows] = await Promise.all([this.products({}), this.filters(), this.db.sitePhoto.findMany()]);
-    return { products, filters, photos: Object.fromEntries(photoRows.filter((r) => r.src).map((r) => [r.photoKey, { src: r.src, alt: r.alt }])) };
+    const [products, filters, parts, photoRows] = await Promise.all([this.products({}), this.filters(), this.parts(), this.db.sitePhoto.findMany()]);
+    return { products, filters, parts, photos: Object.fromEntries(photoRows.filter((r) => r.src).map((r) => [r.photoKey, { src: r.src, alt: r.alt }])) };
   }
 
   private async productBySlug(slug: string) {
@@ -120,6 +140,36 @@ export class CatalogService {
     await this.filterById(id);
     await this.db.filterSku.delete({ where: { id } });
     await this.audit.log(adminId, 'filter_skus', id, 'delete');
+  }
+
+  private async partBySlug(slug: string) {
+    const row = await this.db.sparePart.findUnique({ where: { slug }, include: sparePartInclude });
+    if (!row) throw new NotFoundException('Spare part not found.');
+    return toApiSparePart(row);
+  }
+
+  async createPart(adminId: string, dto: SparePartDto) {
+    if (await this.db.sparePart.findUnique({ where: { slug: dto.slug } })) throw new ConflictException(`A spare part with the slug "${dto.slug}" already exists.`);
+    const last = await this.db.sparePart.aggregate({ _max: { sortOrder: true } });
+    await this.writer.transaction((tx) => this.writer.saveSparePart(tx, dto, (last._max.sortOrder ?? -1) + 1));
+    await this.audit.log(adminId, 'spare_parts', dto.slug, 'create', { name: dto.name });
+    return this.partBySlug(dto.slug);
+  }
+
+  async updatePart(adminId: string, slug: string, dto: SparePartDto) {
+    if (dto.slug !== slug) throw new ConflictException("A spare part's slug can't be changed after it is created.");
+    await this.partBySlug(slug);
+    await this.writer.transaction((tx) => this.writer.saveSparePart(tx, dto));
+    await this.audit.log(adminId, 'spare_parts', slug, 'update', { name: dto.name, price: dto.price, hidden: !!dto.hidden });
+    return this.partBySlug(slug);
+  }
+
+  /** Past orders keep the part's name; their link to it is cleared. */
+  async deletePart(adminId: string, slug: string) {
+    const row = await this.db.sparePart.findUnique({ where: { slug } });
+    if (!row) throw new NotFoundException('Spare part not found.');
+    await this.db.sparePart.delete({ where: { id: row.id } });
+    await this.audit.log(adminId, 'spare_parts', slug, 'delete', { name: row.name });
   }
 
   async savePhoto(adminId: string, key: string, dto: PhotoDto) {

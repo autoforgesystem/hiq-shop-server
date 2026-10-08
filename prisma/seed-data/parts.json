@@ -1,0 +1,493 @@
+[
+  {
+    "slug": "union-connector-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Straight union connector, 1/4\" tube",
+    "category": "fittings",
+    "description": "Joins two lengths of tubing in a straight line.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "union-connector-3-8",
+    "sku": "[PART SKU TBC]",
+    "name": "Straight union connector, 3/8\" tube",
+    "category": "fittings",
+    "description": "Joins two lengths of tubing in a straight line.",
+    "specs": {
+      "Tube size": "3/8\" (9.5 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "elbow-connector-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Elbow connector, 1/4\" tube",
+    "category": "fittings",
+    "description": "Turns tubing through 90° in tight spaces under the sink.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "elbow-connector-3-8",
+    "sku": "[PART SKU TBC]",
+    "name": "Elbow connector, 3/8\" tube",
+    "category": "fittings",
+    "description": "Turns tubing through 90° in tight spaces under the sink.",
+    "specs": {
+      "Tube size": "3/8\" (9.5 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "tee-connector-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Tee connector, 1/4\" tube",
+    "category": "fittings",
+    "description": "Splits one line into two, e.g. to feed a second faucet.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "reducing-union-3-8-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Reducing union, 3/8\" to 1/4\" tube",
+    "category": "fittings",
+    "description": "Joins a 3/8\" line to a 1/4\" line.",
+    "specs": {
+      "Tube size": "3/8\" to 1/4\"",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "male-adapter-1-4-npt",
+    "sku": "[PART SKU TBC]",
+    "name": "Male adapter, 1/4\" tube × 1/4\" NPT",
+    "category": "fittings",
+    "description": "Connects tubing to a threaded port on a housing, valve or pump.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Thread": "1/4\" NPT male",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "pe-tubing-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "PE tubing, 1/4\"",
+    "category": "hoses-tubing",
+    "description": "Food-grade tubing for drinking-water lines, cut to the length you order.",
+    "specs": {
+      "Outside diameter": "1/4\" (6.35 mm)",
+      "Colour": null,
+      "Food grade": null
+    },
+    "images": [],
+    "unit": "meter",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "pe-tubing-3-8",
+    "sku": "[PART SKU TBC]",
+    "name": "PE tubing, 3/8\"",
+    "category": "hoses-tubing",
+    "description": "Food-grade tubing for higher-flow lines, cut to the length you order.",
+    "specs": {
+      "Outside diameter": "3/8\" (9.5 mm)",
+      "Colour": null,
+      "Food grade": null
+    },
+    "images": [],
+    "unit": "meter",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "pe-tubing-1-4-roll",
+    "sku": "[PART SKU TBC]",
+    "name": "PE tubing, 1/4\", full roll",
+    "category": "hoses-tubing",
+    "description": "A full roll of 1/4\" tubing for installers and resellers.",
+    "specs": {
+      "Outside diameter": "1/4\" (6.35 mm)",
+      "Length per roll": null,
+      "Food grade": null
+    },
+    "images": [],
+    "unit": "pack",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "braided-hose-1-2-40cm",
+    "sku": "[PART SKU TBC]",
+    "name": "Braided inlet hose, 1/2\" × 1/2\", 40 cm",
+    "category": "hoses-tubing",
+    "description": "Flexible stainless-braided hose from the supply valve to the system.",
+    "specs": {
+      "Connections": "1/2\" female × 1/2\" female",
+      "Length": "40 cm",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "braided-hose-1-2-60cm",
+    "sku": "[PART SKU TBC]",
+    "name": "Braided inlet hose, 1/2\" × 1/2\", 60 cm",
+    "category": "hoses-tubing",
+    "description": "Flexible stainless-braided hose from the supply valve to the system.",
+    "specs": {
+      "Connections": "1/2\" female × 1/2\" female",
+      "Length": "60 cm",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "pp-sediment-10in-5-micron",
+    "sku": "[PART SKU TBC]",
+    "name": "PP sediment cartridge, 10\", 5 micron",
+    "category": "filter-cartridges",
+    "description": "General-purpose sediment cartridge that catches sand, rust and silt. Fits standard 10\" housings.",
+    "specs": {
+      "Length": "10\" (standard)",
+      "Rating": "5 micron",
+      "Replace every": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "pp-sediment-10in-1-micron",
+    "sku": "[PART SKU TBC]",
+    "name": "PP sediment cartridge, 10\", 1 micron",
+    "category": "filter-cartridges",
+    "description": "Finer sediment cartridge for a second sediment stage. Fits standard 10\" housings.",
+    "specs": {
+      "Length": "10\" (standard)",
+      "Rating": "1 micron",
+      "Replace every": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "pp-sediment-10in-5-micron-pack",
+    "sku": "[PART SKU TBC]",
+    "name": "PP sediment cartridge, 10\", 5 micron, reseller pack",
+    "category": "filter-cartridges",
+    "description": "A pack of 5-micron sediment cartridges for resellers and service teams.",
+    "specs": {
+      "Length": "10\" (standard)",
+      "Rating": "5 micron",
+      "Cartridges per pack": null
+    },
+    "images": [],
+    "unit": "pack",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "gac-carbon-10in",
+    "sku": "[PART SKU TBC]",
+    "name": "GAC carbon cartridge, 10\"",
+    "category": "filter-cartridges",
+    "description": "Granular activated carbon that reduces chlorine, taste and odour. Fits standard 10\" housings.",
+    "specs": {
+      "Length": "10\" (standard)",
+      "Media": "Granular activated carbon",
+      "Replace every": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "cto-carbon-block-10in",
+    "sku": "[PART SKU TBC]",
+    "name": "CTO carbon block cartridge, 10\"",
+    "category": "filter-cartridges",
+    "description": "Carbon block for chlorine, taste and odour, with finer filtration than GAC. Fits standard 10\" housings.",
+    "specs": {
+      "Length": "10\" (standard)",
+      "Media": "Carbon block",
+      "Replace every": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "inline-post-carbon-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Inline post-carbon cartridge, 1/4\"",
+    "category": "filter-cartridges",
+    "description": "Final polishing stage before the faucet. Connects inline with 1/4\" fittings.",
+    "specs": {
+      "Connection": "1/4\"",
+      "Media": "Coconut-shell carbon",
+      "Replace every": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "ro-membrane-75gpd",
+    "sku": "[PART SKU TBC]",
+    "name": "RO membrane, 75 GPD",
+    "category": "filter-cartridges",
+    "description": "Reverse osmosis membrane for standard residential RO housings.",
+    "specs": {
+      "Output": "75 gallons per day",
+      "Size": null,
+      "Replace every": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "drinking-faucet-chrome-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Drinking water faucet, chrome, 1/4\" tube",
+    "category": "faucets",
+    "description": "Dedicated faucet for filtered water, mounted on the sink or counter.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Finish": "Chrome",
+      "Mounting hole": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "gooseneck-faucet-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Goose-neck drinking faucet, 1/4\" tube",
+    "category": "faucets",
+    "description": "High-arc faucet for filling tall bottles and jugs with filtered water.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Finish": null,
+      "Mounting hole": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "feed-valve-1-2-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Feed water valve, 1/2\" × 1/4\" tube",
+    "category": "valves",
+    "description": "Taps the cold-water line under the sink to feed a filter system.",
+    "specs": {
+      "Thread": "1/2\"",
+      "Tube size": "1/4\" (6.35 mm)",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "ball-valve-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Inline ball valve, 1/4\" tube",
+    "category": "valves",
+    "description": "Shuts off a line by hand, e.g. before changing filters.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "check-valve-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Check valve, 1/4\" tube",
+    "category": "valves",
+    "description": "Stops water flowing back through the line.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "auto-shutoff-valve-1-4",
+    "sku": "[PART SKU TBC]",
+    "name": "Auto shut-off valve, 1/4\" tube",
+    "category": "valves",
+    "description": "Stops the feed water when an RO tank is full.",
+    "specs": {
+      "Tube size": "1/4\" (6.35 mm)",
+      "Connection": "Push-fit",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "housing-10in-clear-1-2",
+    "sku": "[PART SKU TBC]",
+    "name": "Filter housing, 10\", clear, 1/2\" ports",
+    "category": "housings",
+    "description": "Standard 10\" housing. The clear sump lets you see when a sediment cartridge needs changing.",
+    "specs": {
+      "Cartridge size": "10\" (standard)",
+      "Ports": "1/2\" female",
+      "Max pressure": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "housing-10in-white-1-2",
+    "sku": "[PART SKU TBC]",
+    "name": "Filter housing, 10\", white, 1/2\" ports",
+    "category": "housings",
+    "description": "Standard 10\" housing. The opaque sump stops algae growing on carbon cartridges.",
+    "specs": {
+      "Cartridge size": "10\" (standard)",
+      "Ports": "1/2\" female",
+      "Max pressure": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "housing-wrench-10in",
+    "sku": "[PART SKU TBC]",
+    "name": "Housing wrench for 10\" housings",
+    "category": "housings",
+    "description": "Loosens and tightens standard 10\" housings when you change cartridges.",
+    "specs": {
+      "Fits": "Standard 10\" housings"
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "housing-o-ring-10in",
+    "sku": "[PART SKU TBC]",
+    "name": "O-ring for 10\" filter housing",
+    "category": "housings",
+    "description": "Replacement seal for a standard 10\" housing. Replace it if the housing leaks.",
+    "specs": {
+      "Fits": "Standard 10\" housings",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "ptfe-thread-tape",
+    "sku": "[PART SKU TBC]",
+    "name": "PTFE thread seal tape",
+    "category": "other",
+    "description": "Seals threaded joints on housings, valves and adapters.",
+    "specs": {
+      "Width": null,
+      "Length": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  },
+  {
+    "slug": "bracket-single-10in",
+    "sku": "[PART SKU TBC]",
+    "name": "Mounting bracket for one 10\" housing",
+    "category": "other",
+    "description": "Holds a single 10\" housing on the cabinet wall.",
+    "specs": {
+      "Fits": "Standard 10\" housings",
+      "Material": null
+    },
+    "images": [],
+    "unit": "piece",
+    "price": null,
+    "compatibleModels": []
+  }
+]

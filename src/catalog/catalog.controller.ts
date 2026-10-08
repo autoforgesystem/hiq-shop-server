@@ -10,7 +10,7 @@ import { open, unlink } from 'node:fs/promises';
 import { diskStorage } from 'multer';
 import { AdminGuard, AdminId, Roles } from '../auth/auth.guards.js';
 import type { Env } from '../config/env.js';
-import { CatalogImportDto, FilterDto, PhotoDto, ProductDto, ProductQueryDto } from './catalog.dto.js';
+import { CatalogImportDto, FilterDto, PhotoDto, ProductDto, ProductQueryDto, SparePartDto, SparePartQueryDto } from './catalog.dto.js';
 import { CatalogService } from './catalog.service.js';
 
 const IMAGE_TYPES: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/avif': 'avif' };
@@ -38,7 +38,7 @@ async function looksLikeImage(path: string, mimetype: string) {
 export class CatalogController {
   constructor(private readonly catalog: CatalogService) {}
 
-  /** Products, filters and site photos in one call (same shape as the front-end's CatalogData). */
+  /** Products, filters, spare parts and site photos in one call (same shape as the front-end's CatalogData). */
   @Get('catalog')
   catalogData() {
     return this.catalog.publicCatalog();
@@ -58,6 +58,17 @@ export class CatalogController {
   @Get('filters')
   filters(@Query('model') model?: string) {
     return this.catalog.filtersFor(model);
+  }
+
+  /** Spare parts, optionally by category or by the model they fit: /parts?category=fittings&model=w2-170p */
+  @Get('parts')
+  parts(@Query() q: SparePartQueryDto) {
+    return this.catalog.listParts(q);
+  }
+
+  @Get('parts/:slug')
+  part(@Param('slug') slug: string) {
+    return this.catalog.getPart(slug);
   }
 }
 
@@ -114,6 +125,21 @@ export class AdminCatalogController {
   @Delete('filters/:id') @HttpCode(204)
   deleteFilter(@AdminId() admin: string, @Param('id', ParseUUIDPipe) id: string) {
     return this.catalog.deleteFilter(admin, id);
+  }
+
+  @Post('parts')
+  createPart(@AdminId() admin: string, @Body() dto: SparePartDto) {
+    return this.catalog.createPart(admin, dto);
+  }
+
+  @Put('parts/:slug')
+  updatePart(@AdminId() admin: string, @Param('slug') slug: string, @Body() dto: SparePartDto) {
+    return this.catalog.updatePart(admin, slug, dto);
+  }
+
+  @Delete('parts/:slug') @HttpCode(204)
+  deletePart(@AdminId() admin: string, @Param('slug') slug: string) {
+    return this.catalog.deletePart(admin, slug);
   }
 
   @Put('photos/:key')

@@ -3,6 +3,9 @@ export const CATEGORIES = ['under-sink', 'countertop', 'dispensers', 'whole-hous
 export const CHANNELS = ['shop', 'quote'] as const;
 export const NEED_CODES = ['home', 'condo', 'office', 'business'] as const;
 export const FILTRATION_CODES = ['UF', 'Nano', 'RO', 'UV', 'Alkaline'] as const;
+export const PART_CATEGORIES = ['fittings', 'hoses-tubing', 'filter-cartridges', 'faucets', 'valves', 'housings', 'other'] as const;
+/** What a spare part's price and quantity count: one piece, one meter, or one pack. */
+export const PART_UNITS = ['piece', 'meter', 'pack'] as const;
 
 export const ORDER_STATUSES = ['pending', 'paid', 'shipped', 'delivered', 'cancelled'] as const;
 export const PAYMENT_METHODS = ['card', 'gcash', 'maya', 'online_banking'] as const;

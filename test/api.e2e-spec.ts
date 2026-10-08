@@ -48,6 +48,7 @@ describe('HIQ Shop API (e2e)', () => {
       const { body } = await api().get('/api/catalog').expect(200);
       expect(body.products).toHaveLength(16);
       expect(body.filters).toHaveLength(20);
+      expect(body.parts).toHaveLength(31);
       const p = body.products.find((x: { slug: string }) => x.slug === 'hw-np-200');
       expect(p).toMatchObject({ model: 'HW NP 200', category: 'under-sink', channel: 'shop', needs: ['home', 'condo'], filtration: ['UF', 'Nano'], tdsLimit: 190, price: null, warrantyTbc: true });
       expect(p.specs).toMatchObject({ 'Inlet water requirement': 'Below 190 ppm TDS', Capacity: null });
@@ -60,6 +61,17 @@ describe('HIQ Shop API (e2e)', () => {
       expect(vp.filters.length).toBe(5);
       await api().get('/api/products/does-not-exist').expect(404);
       await api().get('/api/products?category=spaceship').expect(400);
+    });
+
+    it('lists spare parts by category and finds one by slug', async () => {
+      const { body: fittings } = await api().get('/api/parts?category=fittings').expect(200);
+      expect(fittings.length).toBeGreaterThan(0);
+      expect(fittings.every((p: { category: string }) => p.category === 'fittings')).toBe(true);
+      const { body: tubing } = await api().get('/api/parts/pe-tubing-1-4').expect(200);
+      expect(tubing).toMatchObject({ sku: '[PART SKU TBC]', category: 'hoses-tubing', unit: 'meter', price: null, compatibleModels: [], images: [] });
+      expect(Object.keys(tubing.specs)).toEqual(['Outside diameter', 'Colour', 'Food grade']); // label order is kept
+      await api().get('/api/parts/does-not-exist').expect(404);
+      await api().get('/api/parts?category=spaceship').expect(400);
     });
   });
 
@@ -166,6 +178,37 @@ describe('HIQ Shop API (e2e)', () => {
       const { body: g } = await api().put(`/api/admin/filters/${f.id}`).set(auth(adminToken)).send({ ...f, price: 900 }).expect(200);
       expect(g.price).toBe(900);
     });
+
+    it('creates, edits, hides and deletes spare parts', async () => {
+      const part = {
+        slug: 'w2-faucet-o-ring', sku: 'W2-OR-01', name: 'W2 faucet O-ring', category: 'other', description: 'Seal for the W2 faucet.',
+        specs: { Size: '12 mm', Material: null }, images: [{ src: 'https://img.example.com/o-ring.webp', alt: 'O-ring' }],
+        unit: 'piece', price: 45, compatibleModels: ['w2-170p'],
+      };
+      const { body: p } = await api().post('/api/admin/parts').set(auth(adminToken)).send(part).expect(201);
+      expect(p).toMatchObject({ ...part, specs: { Size: '12 mm', Material: null } });
+      await api().post('/api/admin/parts').set(auth(adminToken)).send(part).expect(409);
+      await api().post('/api/admin/parts').set(auth(adminToken)).send({ ...part, slug: 'other-slug', compatibleModels: ['nope'] }).expect(400);
+      await api().post('/api/admin/parts').set(auth(adminToken)).send({ ...part, slug: 'other-slug', unit: 'barrel' }).expect(400);
+      await api().post('/api/admin/parts').send({ ...part, slug: 'other-slug' }).expect(401);
+
+      const { body: forModel } = await api().get('/api/parts?model=w2-170p').expect(200);
+      expect(forModel.map((x: { slug: string }) => x.slug)).toEqual(['w2-faucet-o-ring']);
+
+      await api().put('/api/admin/parts/w2-faucet-o-ring').set(auth(adminToken)).send({ ...part, slug: 'renamed' }).expect(409);
+      const { body: hidden } = await api().put('/api/admin/parts/w2-faucet-o-ring').set(auth(adminToken)).send({ ...part, price: 50, hidden: true }).expect(200);
+      expect(hidden).toMatchObject({ price: 50, hidden: true });
+      await api().get('/api/parts/w2-faucet-o-ring').expect(404);
+      expect((await api().get('/api/admin/catalog').set(auth(adminToken))).body.parts.some((x: { slug: string }) => x.slug === 'w2-faucet-o-ring')).toBe(true);
+
+      await api().delete('/api/admin/parts/w2-faucet-o-ring').set(auth(adminToken)).expect(204);
+      await api().delete('/api/admin/parts/w2-faucet-o-ring').set(auth(adminToken)).expect(404);
+      const { body: log } = await api().get('/api/admin/audit-log').set(auth(adminToken)).expect(200);
+      expect(log[0]).toMatchObject({ entity: 'spare_parts', entityId: 'w2-faucet-o-ring', action: 'delete' });
+
+      const tubing = (await api().get('/api/parts/pe-tubing-1-4')).body;
+      await api().put('/api/admin/parts/pe-tubing-1-4').set(auth(adminToken)).send({ ...tubing, price: 35.5 }).expect(200);
+    });
   });
 
   describe('checkout', () => {
@@ -202,6 +245,21 @@ describe('HIQ Shop API (e2e)', () => {
       await api().post('/api/orders').send({ ...base, lines: [{ productSlug: 'w2-170p', qty: 1, configuration: 'Gold plated' }] }).expect(400);
       await api().post('/api/orders').send({ ...base, install: { date: day(-1) }, lines: [{ productSlug: 'w2-170p', qty: 1 }] }).expect(400);
       await api().post('/api/orders').send({ ...base, lines: [] }).expect(400);
+    });
+
+    it('sells spare parts by the unit, with larger quantities than systems', async () => {
+      const base = { contact: { name: 'Reseller', email: 'reseller@example.com', phone: '09170000001' }, shipping: { line1: 'a', city: 'b', province: 'c' }, paymentMethod: 'gcash' };
+      const { body } = await api().post('/api/orders').send({ ...base, lines: [{ sparePartSlug: 'pe-tubing-1-4', qty: 50 }, { sparePartSlug: 'elbow-connector-1-4', qty: 4 }] }).expect(201);
+      expect(body).toMatchObject({ subtotal: 1775, requiresQuote: true }); // 50 m × ₱35.50; the elbow has no price yet
+      const tubing = body.lines.find((l: { name: string }) => l.name === 'PE tubing, 1/4"');
+      expect(tubing).toMatchObject({ qty: 50, unitPrice: 35.5, productId: null, filterSkuId: null });
+      expect(tubing.sparePartId).toMatch(/^[0-9a-f-]{36}$/);
+
+      await api().post('/api/orders').send({ ...base, lines: [{ sparePartSlug: 'nope', qty: 1 }] }).expect(400);
+      await api().post('/api/orders').send({ ...base, lines: [{ sparePartSlug: 'pe-tubing-1-4', productSlug: 'w2-170p', qty: 1 }] }).expect(400);
+      await api().post('/api/orders').send({ ...base, lines: [{ sparePartSlug: 'pe-tubing-1-4', qty: 501 }] }).expect(400);
+      const many = await api().post('/api/orders').send({ ...base, lines: [{ productSlug: 'w2-170p', qty: 21 }] }).expect(400);
+      expect(many.body.message).toMatch(/up to 20/);
     });
 
     it('shows an order to its guest only with the checkout email', async () => {
@@ -311,13 +369,13 @@ describe('HIQ Shop API (e2e)', () => {
       const { body: cat } = await api().get('/api/admin/catalog').set(auth(adminToken)).expect(200);
       const keep = cat.products.filter((p: { slug: string }) => p.slug !== 'w2-170p' && p.slug !== 'hw-np-100m');
       const r = await api().put('/api/admin/catalog').set(auth(adminToken)).send({ products: keep, filters: cat.filters.filter((f: { compatibleModels: string[] }) => !f.compatibleModels.includes('w2-170p') && !f.compatibleModels.includes('hw-np-100m')) }).expect(200);
-      expect(r.body).toMatchObject({ products: 14, hidden: 1 });
+      expect(r.body).toMatchObject({ products: 14, hidden: 1, parts: 31 }); // a backup without parts keeps the parts
       const after = (await api().get('/api/admin/catalog').set(auth(adminToken))).body.products.map((p: { slug: string }) => p.slug);
       expect(after).toContain('w2-170p');
       expect(after).not.toContain('hw-np-100m');
 
       const reset = await api().post('/api/admin/catalog/reset').set(auth(adminToken)).expect(200);
-      expect(reset.body.products).toBe(16);
+      expect(reset.body).toMatchObject({ products: 16, parts: 31 });
       expect((await api().get('/api/catalog')).body.products).toHaveLength(16);
     });
   });

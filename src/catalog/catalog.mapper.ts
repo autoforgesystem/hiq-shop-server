@@ -10,9 +10,11 @@ export const productInclude = {
 } satisfies Prisma.ProductInclude;
 
 export const filterInclude = { compatibleWith: { include: { product: { select: { slug: true } } } } } satisfies Prisma.FilterSkuInclude;
+export const sparePartInclude = { compatibleWith: { include: { product: { select: { slug: true } } } } } satisfies Prisma.SparePartInclude;
 
 type ProductRow = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 type FilterRow = Prisma.FilterSkuGetPayload<{ include: typeof filterInclude }>;
+type SparePartRow = Prisma.SparePartGetPayload<{ include: typeof sparePartInclude }>;
 
 /** The front-end `Product` shape (apps/src/data/types.ts). */
 export const toApiProduct = (p: ProductRow) => ({
@@ -52,4 +54,19 @@ export const toApiFilter = (f: FilterRow) => ({
   intervalMonths: f.intervalMonths,
   price: toPesos(f.priceCentavos),
   ...(f.note && { note: f.note }),
+});
+
+/** The front-end `SparePart` shape. */
+export const toApiSparePart = (p: SparePartRow) => ({
+  slug: p.slug,
+  sku: p.sku,
+  name: p.name,
+  category: p.category,
+  description: p.description,
+  specs: p.specs as Record<string, string | null>,
+  images: p.images as { src: string; alt: string }[],
+  unit: p.unit,
+  price: toPesos(p.priceCentavos),
+  compatibleModels: p.compatibleWith.map((c) => c.product.slug),
+  ...(p.isHidden && { hidden: true }),
 });
